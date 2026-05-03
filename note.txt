@@ -1,0 +1,100 @@
+Nama : Isna Azis Nurohman
+NIM  : 257110012
+PROJECT PREDICTIVE MAINTENANCE PERANGKAT IOT
+
+
+METODE-METODE YANG DIGUNAKAN DALAM PROJECT PREDICTIVE MAINTENANCE
+
+1. EKSPLORASI DATA DESKRIPTIF (EDA)
+   - Mean (μ): Rata-rata nilai sensor
+   - Standar Deviasi (σ): Mengukur sebaran data terhadap rata-rata
+   - Kuartil: Analisis distribusi pada persentil 25%, 50% (Median), 75%
+   - Hasil: Identifikasi suhu operasional normal mesin (310K ± 1.48K)
+
+2. ANALISIS KORELASI DAN REGRESI LINIER
+   - Korelasi Pearson (r): Mengukur hubungan linear antara Torque dan suhu proses
+   - Model Regresi Linier Sederhana: ŷ = β₀ + β₁x
+   - Hasil: Korelasi sangat rendah (r ≈ -0.01), Torque bukan faktor dominan
+
+3. DISTRIBUSI PROBABILITAS
+   a) Distribusi Normal (Kontinu) - Untuk suhu
+      - Formula: f(x) = 1/(σ√(2π)) * e^(-1/2((x-μ)/σ)²)
+      - Hasil: P(X > 312K) ≈ 8.94%
+   
+   b) Distribusi Poisson (Diskrit) - Untuk kegagalan
+      - Formula: P(X=k) = (λ^k * e^(-λ)) / k!
+      - Hasil: P(X=1) ≈ 11.43% untuk 100 siklus kerja
+
+4. DETEKSI ANOMALI DENGAN Z-SCORE
+   - Formula Z-Score: z = (x - μ) / σ
+   - Threshold: |z| > 3 (Aturan Tiga Sigma / Three-Sigma Rule)
+   - Hasil: 164 anomali terdeteksi pada Rotational Speed, 33 adalah kegagalan nyata
+   - Efektivitas: Anomali Z-Score adalah indikator kuat kegagalan perangkat
+
+ALASAN METODE INI SANGAT TEPAT UNTUK PROJECT
+===============================================
+
+1. ✓ EDA - FONDASI PEMAHAMAN DATA
+   Alasan Penggunaan:
+   - Data sensor IoT memiliki variabilitas tinggi, perlu memahami pola normalnya
+   - Mean & Std Dev membantu mengidentifikasi "keadaan sehat" mesin untuk benchmark
+   - Kuartil memberikan insight tentang persentase waktu mesin beroperasi pada kondisi tertentu
+   - TEPAT karena: Sebelum memprediksi kegagalan, harus tahu seperti apa data normal
+
+2. ✓ REGRESI LINIER - HUBUNGAN SEBAB-AKIBAT
+   Alasan Penggunaan:
+   - Untuk menentukan apakah beban kerja (Torque) menyebabkan kenaikan suhu
+   - Korelasi Pearson memberti metrik objektif hubungan antar variabel
+   - Model regresi bisa digunakan untuk prediksi suhu berdasarkan beban
+   - TEPAT karena: Temuan r ≈ -0.01 penting untuk pemahaman root cause kegagalan
+     Ini berarti kegagalan bukan dari beban sesaat, tapi akumulasi/wear
+
+3. ✓ DISTRIBUSI PROBABILITAS - QUANTIFYING RISK
+   Alasan Penggunaan:
+   - Distribusi Normal cocok untuk variabel kontinu seperti suhu yang terdistribusi normal
+   - Memungkinkan perhitungan peluang kejadian kritis (P(X > 312K))
+   - Distribusi Poisson cocok untuk menghitung peluang jumlah kegagalan diskrit
+   - TEPAT karena: Dalam IoT maintenance, risk quantification vital untuk:
+     • Menentukan kapan maintenance perlu dijadwalkan
+     • Menghitung SLA (Service Level Agreement)
+     • Business decision making berdasarkan probabilitas
+
+4. ✓ Z-SCORE ANOMALY DETECTION - EARLY WARNING SYSTEM
+   Alasan Penggunaan:
+   - Z-Score adalah metode simple namun efektif untuk univariate anomaly
+   - Aturan 3-Sigma sudah proven secara statistik: ~99.7% data normal berada dalam 3σ
+   - Deteksi real-time: bisa langsung implementasi tanpa training model kompleks
+   - TEPAT karena: Mesin IoT perlu early warning yang cepat
+     • Hasil 33 dari 164 anomali adalah kegagalan nyata = 20% precision
+     • Mampu mendeteksi pola abnormal SEBELUM kegagalan total terjadi
+     • Ideal untuk predictive maintenance (mencegah > memperbaiki)
+
+KESIMPULAN KOMBINASI METODE
+=============================
+Kombinasi 4 metode ini membentuk framework prediksi kegagalan yang ROBUST:
+
+  EDA           → Memahami baseline operasi normal
+     ↓
+  Regresi       → Mengidentifikasi faktor penyebab kegagalan
+     ↓
+  Probabilitas  → Menghitung risiko & probabilitas kegagalan
+     ↓
+  Z-Score      → Mendeteksi anomali real-time & memberikan alert
+
+TEKNOLOGI & TOOLS YANG DIGUNAKAN
+==================================
+- Python 3
+- Pandas (Data manipulation)
+- NumPy (Numerik computation)
+- Matplotlib/Seaborn (Visualisasi)
+- Scipy.stats (Distribusi probabilitas)
+- Dataset: AI4I 2020 (UCI Repository)
+
+STRUKTUR PROJECT
+=================
+- main.py: Entry point pipeline
+- src/data_loader.py: Load & validasi data
+- src/eda.py: Analisis eksplorasi data
+- src/stats_models.py: Pemodelan statistik (regresi + probabilitas)
+- src/anomaly_detection.py: Deteksi anomali Z-score
+- predictive_maintenance_analysis.ipynb: Notebook untuk analisis interaktif
